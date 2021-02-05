@@ -1,0 +1,29 @@
+{
+  "name": "sandbox",
+  "version": "1.0.0",
+  "description": "Sandbox API to learn and try a lot of things about Node.js and Express framework",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gabbloquet/nodejs-express-sandbox.git"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "api",
+    "sandbox"
+  ],
+  "author": "Gabin Bloquet",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gabbloquet/nodejs-express-sandbox/issues"
+  },
+  "homepage": "https://github.com/gabbloquet/nodejs-express-sandbox#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

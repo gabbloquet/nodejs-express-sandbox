@@ -7,7 +7,7 @@ Typescript usage for developer experience and [shift left](https://smartbear.com
 ### Mongodb
 1. Install mongo : [MacOs installation tutorial](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/) 
 2. launch local server : `mongod --config /usr/local/etc/mongod.conf --fork`
-3. feed database : `mongo proximityApi < ./assets/data/merchants.js`
+3. in another tab, feed database : `mongo proximityApi < ./assets/data/merchants.js`
 
 ### Nodejs
 1. npm install

@@ -1,8 +1,12 @@
 const express = require('express');
+const mongoose = require('mongoose');
 
 const app = express();
+const db = mongoose.connect('mongodb://localhost/proximityApi')
 const merchantRouter = express.Router();
 const classicPort = process.env.PORT || 8000;
+
+// const Merchant = require('./domain/models/merchantModel')
 
 merchantRouter.route('/')
   .get((req, res) => {

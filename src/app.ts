@@ -1,3 +1,5 @@
+import {MerchantType} from "./domain/merchant/models";
+
 const express = require('express');
 const app = express();
 
@@ -12,3 +14,5 @@ require('./config/express')(app);
 
 // Bootstrap server configuration
 require('./config/server')(app);
+
+

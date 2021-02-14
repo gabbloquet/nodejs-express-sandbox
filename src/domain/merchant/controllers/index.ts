@@ -1,4 +1,4 @@
-import {Request, Response} from "express";
+import {Application, Request, Response} from "express";
 import {Merchant, MerchantType} from "../models";
 
 /**
@@ -32,3 +32,9 @@ export const createMerchant = (req: Request, res: Response) => {
   merchant.save();
   return res.status(201).json(merchant)
 };
+
+module.exports = (app: Application) => {
+  app.get('/merchants', getMerchants);
+  app.get('/merchants/:id', getMerchantById);
+  app.post('/merchants', createMerchant);
+}

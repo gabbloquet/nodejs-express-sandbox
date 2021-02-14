@@ -1,49 +1,14 @@
 import {Application, NextFunction, Request, Response} from "express";
 import {Merchant, MerchantType} from "../models";
 
-/**
- * Get all merchants.
- * @route GET /merchants
- */
-export const getMerchants = (req: Request, res: Response) => {
-  const { query } = req;
-  Merchant.find(query, (err: Error, merchants: Array<MerchantType>) => {
-    return err ? res.send(err) : res.json(merchants);
-  })
-};
-
-/**
- * Get a specific merchant with ID.
- * @route GET /merchants/:id
- */
-export const getMerchantById = (req: Request, res: Response) => res.json(req.merchant);
-
-/**
- * Create a merchant.
- * @route POST /merchants
- */
-export const createMerchant = (req: Request, res: Response) => {
-  const merchant = new Merchant(req.body);
-  merchant.save();
-  return res.status(201).json(merchant)
-};
-
-/**
- * Get a specific merchant with ID.
- * @route PUT /merchants/:id
- */
-export const updateMerchant = (req: Request, res: Response) => {
-  const { params } = req;
-  Merchant.findById(params.id, (err: Error, merchant: MerchantType) => {
-    return err ? res.send(err) : res.json(merchant);
-  })
-};
+const express = require('express');
+const merchantRouter = express.Router();
 
 /**
  * Middleware which return merchant when a request for a specific ID is called.
  * @route ALL /merchants/:id
  */
-export const merchantIdMiddleware = (req: Request, res: Response, next: NextFunction) => {
+merchantRouter.use('/merchants/:id', (req: Request, res: Response, next: NextFunction) => {
   const { params } = req;
   Merchant.findById(params.id, (err: Error, merchant: MerchantType) => {
     if(err) {
@@ -56,12 +21,58 @@ export const merchantIdMiddleware = (req: Request, res: Response, next: NextFunc
     }
     return res.sendStatus(404);
   })
-};
+});
+
+/**
+ * All merchants
+ * @route GET /merchants
+ * @route POST /merchants (creation)
+ */
+merchantRouter.route('/merchants')
+  .get((req: Request, res: Response) => {
+    const { query } = req;
+    Merchant.find(query, (err: Error, merchants: Array<MerchantType>) => {
+      return err ? res.send(err) : res.json(merchants);
+    })
+  })
+  .post((req: Request, res: Response) => {
+    const merchant = new Merchant(req.body);
+    merchant.save();
+    return res.status(201).json(merchant)
+  });
+
+/**
+ * Specific merchant with ID.
+ * @route GET /merchants/:id
+ * @route PUT /merchants/:id
+ */
+merchantRouter.route('/merchants/:id')
+  .get((req: Request, res: Response) => res.json(req.merchant))
+  .put((req: Request, res: Response) => {
+    const {merchant} = req;
+    if(merchant && req.merchant){
+      merchant.id = req.merchant.id;
+      merchant.name = req.merchant.name;
+      merchant.address = req.merchant.address;
+    }
+    req.merchant.save((err: Error) => {
+      return err ? res.send(err) : res.json(merchant)
+    });
+  })
+  .patch((req: Request, res: Response) => {
+    const {merchant} = req;
+    if(req.body._id) {
+      delete req.body._id;
+    }
+    Object.entries(req.body).forEach((item) => {
+      const key = item[0];
+      merchant[key] = item[1];
+    })
+    req.merchant.save((err: Error) => {
+      return err ? res.send(err) : res.json(merchant)
+    });
+  })
 
 module.exports = (app: Application) => {
-  app.get('/merchants', getMerchants);
-  app.get('/merchants/:id', getMerchantById);
-  app.post('/merchants', createMerchant);
-  app.put('/merchants/:id', updateMerchant);
-  app.use('/merchants/:id', merchantIdMiddleware);
+  app.use('/', merchantRouter);
 }

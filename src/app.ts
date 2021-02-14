@@ -1,30 +1,21 @@
+import { Request, Response } from "express";
 const express = require('express');
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
+
+import * as merchantController from './domain/merchant/controllers'
+
+const db = mongoose.connect('mongodb://localhost/proximityApi')
 
 const app = express();
-const db = mongoose.connect('mongodb://localhost/proximityApi')
-const merchantRouter = express.Router();
 const classicPort = process.env.PORT || 8000;
 
-// const Merchant = require('./domain/models/merchantModel')
+app.get('/merchants', merchantController.getMerchants);
 
-merchantRouter.route('/')
-  .get((req, res) => {
-    const response = [
-      {id: 1, name: 'La Prairie'},
-      {id: 2, name: "Prise Direct'"}
-    ]
-
-    res.json(response);
-  })
-
-app.use('/merchants', merchantRouter);
-
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: Response) => {
   res.send('Welcome to my API (powered by Nodemon) !')
 })
 
-app.listen(classicPort, (req, res) => {
+app.listen(classicPort, (req: Request, res: Response) => {
   console.log('My wonderful app is running on ' + classicPort + ' port.')
 })
 

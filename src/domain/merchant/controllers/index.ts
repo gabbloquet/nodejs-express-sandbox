@@ -42,18 +42,19 @@ merchantRouter.route('/merchants')
   });
 
 /**
- * Specific merchant with ID.
+ * Get a specific merchant with ID or update it.
  * @route GET /merchants/:id
  * @route PUT /merchants/:id
+ * @route PATCH /merchants/:id
  */
 merchantRouter.route('/merchants/:id')
   .get((req: Request, res: Response) => res.json(req.merchant))
   .put((req: Request, res: Response) => {
     const {merchant} = req;
-    if(merchant && req.merchant){
-      merchant.id = req.merchant.id;
-      merchant.name = req.merchant.name;
-      merchant.address = req.merchant.address;
+    if(merchant && req.body){
+      merchant.id = req.body.id;
+      merchant.name = req.body.name;
+      merchant.address = req.body.address;
     }
     req.merchant.save((err: Error) => {
       return err ? res.send(err) : res.json(merchant)

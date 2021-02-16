@@ -1,10 +1,7 @@
-import {Application} from "express";
-
-const classicPort = process.env.PORT || 8000;
+import {Application, Request, Response} from "express";
 
 module.exports = (app: Application) => {
-
-  app.listen(classicPort, () => {
-    console.log('My wonderful app is running on ' + classicPort + ' port.')
+  app.get('/', (req: Request, res: Response) => {
+    res.send('Welcome to my API (powered by Nodemon) !')
   })
 }

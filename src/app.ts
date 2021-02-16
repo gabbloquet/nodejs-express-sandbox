@@ -1,18 +1,24 @@
-import {MerchantType} from "./domain/merchant/models";
-
+require('dotenv').config();
+import mongoose from "mongoose";
+import bodyParser from "body-parser";
 const express = require('express');
-const app = express();
 
-// Bootstrap database configuration
-require('./config/db')();
+const db = mongoose.connect(`${process.env.DB}`, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.set('useCreateIndex', true);
+
+const app = express();
+const classicPort = process.env.PORT || 8000;
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Define controllers / routes
 require('./domain/merchant/controllers')(app);
 
-// Bootstrap express configuration
-require('./config/express')(app);
-
-// Bootstrap server configuration
+// Define an answer on /
 require('./config/server')(app);
+
+app.listen(classicPort, () => {
+  console.log('My wonderful app is running on ' + classicPort + ' port.')
+})
 
 

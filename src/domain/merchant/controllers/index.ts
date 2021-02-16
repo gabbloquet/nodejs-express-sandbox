@@ -73,6 +73,11 @@ merchantRouter.route('/merchants/:id')
       return err ? res.send(err) : res.json(merchant)
     });
   })
+  .delete((req: Request, res: Response) => {
+    req.merchant.delete((error: Error) => {
+      return error ? res.send(error) : res.sendStatus(204);
+    })
+  })
 
 module.exports = (app: Application) => {
   app.use('/', merchantRouter);

@@ -1,5 +1,6 @@
 import {Application, NextFunction, Request, Response} from "express";
 import {Merchant, MerchantType} from "../models";
+import {createMerchant} from "../services";
 
 const express = require('express');
 const merchantRouter = express.Router();
@@ -31,14 +32,27 @@ merchantRouter.use('/merchants/:id', (req: Request, res: Response, next: NextFun
 merchantRouter.route('/merchants')
   .get((req: Request, res: Response) => {
     const { query } = req;
-    Merchant.find(query, (err: Error, merchants: Array<MerchantType>) => {
-      return err ? res.send(err) : res.json(merchants);
+    Merchant.find(query, (err: Error, merchants: Array<any>) => {
+      if(err){
+        res.send(err)
+      } else {
+        const returnMerchants = merchants.map(merchant => {
+          let newMerchant = merchant.toJSON();
+          newMerchant.links = {};
+          newMerchant.links.self = `http://${req.headers.host}/merchants/${merchant['_id']}`
+          return newMerchant;
+        })
+        res.json(returnMerchants);
+      }
     })
   })
   .post((req: Request, res: Response) => {
-    const merchant = new Merchant(req.body);
-    merchant.save();
-    return res.status(201).json(merchant)
+    try {
+      const merchant = createMerchant(req.body);
+      return res.status(201).json(merchant);
+    } catch (error) {
+      return res.sendStatus(404);
+    }
   });
 
 /**
@@ -48,7 +62,12 @@ merchantRouter.route('/merchants')
  * @route PATCH /merchants/:id
  */
 merchantRouter.route('/merchants/:id')
-  .get((req: Request, res: Response) => res.json(req.merchant))
+  .get((req: Request, res: Response) => {
+    const returnMerchant = req.merchant.toJSON();
+    returnMerchant.links = {};
+    returnMerchant.links.allMerchants = `http://${req.headers.host}/merchants`
+    res.json(returnMerchant)
+  })
   .put((req: Request, res: Response) => {
     const {merchant} = req;
     if(merchant && req.body){

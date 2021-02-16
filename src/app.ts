@@ -17,8 +17,9 @@ require('./domain/merchant/controllers')(app);
 // Define an answer on /
 require('./config/server')(app);
 
-app.listen(classicPort, () => {
+app.server = app.listen(classicPort, () => {
   console.log('My wonderful app is running on ' + classicPort + ' port.')
 })
 
+module.exports = app;
 

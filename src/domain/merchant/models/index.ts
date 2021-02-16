@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const {Schema} = mongoose;
 
 export type MerchantType = {
+  _id?: String,
   id: Number;
   name: String;
   address: String;
